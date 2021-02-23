@@ -15,7 +15,7 @@ type MessengerConfig struct {
 
 type Config struct {
 	MessengerConfig MessengerConfig
-	ENVMode         string
+	ENVState        string
 	Port            string
 }
 
@@ -24,9 +24,9 @@ func (config *Config) Load() error {
 
 	envState := os.Getenv("ENV_STATE")
 	if envState == "" {
-		config.Port = "develop"
+		config.ENVState = "develop"
 	} else {
-		config.Port = envState
+		config.ENVState = envState
 	}
 
 	port := os.Getenv("PORT")

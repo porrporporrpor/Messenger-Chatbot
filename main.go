@@ -16,5 +16,8 @@ func main() {
 		panic(err)
 	}
 
+	if config.ENVMode != "develop" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	router.Start(gin.Default(), config)
 }

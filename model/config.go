@@ -8,6 +8,7 @@ import (
 )
 
 type MessengerConfig struct {
+	MessengerAPIUrl string
 	AppSecret       string
 	PageAccessToken string
 	ValidationToken string
@@ -41,6 +42,11 @@ func (config *Config) Load() error {
 		missingEnv = append(missingEnv, "APP_SECRET")
 	}
 
+	messengerAPIUrl := os.Getenv("MESSENGER_API_URL")
+	if messengerAPIUrl == "" {
+		missingEnv = append(missingEnv, "MESSENGER_API_URL")
+	}
+
 	pageAccessToken := os.Getenv("PAGE_ACCESS_TOKEN")
 	if pageAccessToken == "" {
 		missingEnv = append(missingEnv, "PAGE_ACCESS_TOKEN")
@@ -54,6 +60,7 @@ func (config *Config) Load() error {
 	if len(missingEnv) > 0 {
 		return errors.New(fmt.Sprintf("Environment is required %v", strings.Join(missingEnv, ", ")))
 	}
+	config.MessengerConfig.MessengerAPIUrl = messengerAPIUrl
 	config.MessengerConfig.AppSecret = appSecret
 	config.MessengerConfig.PageAccessToken = pageAccessToken
 	config.MessengerConfig.ValidationToken = validationToken

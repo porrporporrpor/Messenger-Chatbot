@@ -1,5 +1,9 @@
 package model
 
+const (
+	TextOperationGetStart = "Get Start!"
+)
+
 /**
 Media in Message struct can be
 - text string : for normal text message and emoji
@@ -52,17 +56,23 @@ type Message struct {
 	Attachments *[]Attachment `json:"attachments,omitempty"`
 }
 
+type Postback struct {
+	Title   string `json:"title"`
+	Payload string `json:"payload"`
+}
+
 type Messaging struct {
 	Sender    Sender    `json:"sender"`
 	Recipient Recipient `json:"recipient"`
 	Timestamp float64   `json:"timestamp"`
-	Message   Message
+	Message   *Message  `json:"message,omitempty"`
+	Postback  *Postback `json:"postback,omitempty"`
 }
 
 type Entry struct {
-	ID        string         `json:"id"`
-	Time      float64        `json:"time"`
-	Messaging *[]Messaging   `json:"messaging"`
+	ID        string       `json:"id"`
+	Time      float64      `json:"time"`
+	Messaging *[]Messaging `json:"messaging"`
 }
 
 type MessengerRequestBody struct {

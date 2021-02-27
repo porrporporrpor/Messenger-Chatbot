@@ -25,7 +25,7 @@ func (s SettingService) CreateGetStartButton() error {
 
 	// Create Get Start Button
 	rawRequestBody, err := util.CreateRequestBody(model.RequestBodyCreateGetStart{
-		GetStart: model.GetStartPayload{Payload: "<postback_payload>"},
+		GetStart: model.GetStartPayload{Payload: "GET_START"},
 	})
 	if err != nil {
 		log.Error().

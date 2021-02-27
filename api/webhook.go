@@ -8,6 +8,7 @@ import (
 	"gitlab.com/pplayground/messenger-chatbot/backend/service"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type WebhookAPI struct {
@@ -35,7 +36,8 @@ func (api WebhookAPI) ReceiveFromWebhook(ctx *gin.Context) {
 	}
 	if messaging.Postback != nil {
 		fmt.Println(messaging.Postback)
-		if messaging.Postback.Title == "Get Started" {
+		switch messaging.Postback.Payload {
+		case "GET_START":
 			err := api.MessengerService.CreatePersistentMenu(messaging.Sender.ID)
 			if err != nil {
 				log.Error().
@@ -46,8 +48,6 @@ func (api WebhookAPI) ReceiveFromWebhook(ctx *gin.Context) {
 					Status:  model.LogStatusFailed,
 					Payload: "cannot create persistent menu"})
 			}
-		}
-		switch messaging.Postback.Payload {
 		case "SHOP_NOW":
 			err := api.MessengerService.CreateShopNowTemplate(messaging.Sender.ID)
 			if err != nil {
@@ -61,8 +61,11 @@ func (api WebhookAPI) ReceiveFromWebhook(ctx *gin.Context) {
 			}
 		case "MY_ORDER":
 			fmt.Println("my order is not implement")
+		default:
+			if strings.Contains(messaging.Postback.Payload, "VIEW_PRODUCT") {
+				fmt.Println("postback payload:", messaging.Postback.Payload)
+			}
 		}
-
 	}
 	ctx.JSON(200, nil)
 }

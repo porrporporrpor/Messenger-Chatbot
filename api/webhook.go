@@ -29,24 +29,36 @@ func (api WebhookAPI) ReceiveFromWebhook(ctx *gin.Context) {
 		if messaging.Message.Text != "" {
 			switch messaging.Message.Text {
 			case model.TextOperationGetStart:
-				err := api.MessengerService.CreatePersistentMenu(messaging.Sender.ID)
-				if err != nil {
-					log.Error().
-						Str("type", model.LogTypeAPI).
-						Str("status", model.LogStatusFailed).
-						Msg("operation CreatePersistentMenu service failed")
-					ctx.JSON(http.StatusInternalServerError, model.ResponsePayload{
-						Status:  model.LogStatusFailed,
-						Payload: "cannot create persistent menu"})
-				}
+
 			}
 		}
 	}
 	if messaging.Postback != nil {
 		fmt.Println(messaging.Postback)
+		if messaging.Postback.Title == "Get Started" {
+			err := api.MessengerService.CreatePersistentMenu(messaging.Sender.ID)
+			if err != nil {
+				log.Error().
+					Str("type", model.LogTypeAPI).
+					Str("status", model.LogStatusFailed).
+					Msg("operation CreatePersistentMenu service failed")
+				ctx.JSON(http.StatusInternalServerError, model.ResponsePayload{
+					Status:  model.LogStatusFailed,
+					Payload: "cannot create persistent menu"})
+			}
+		}
 		switch messaging.Postback.Payload {
 		case "SHOP_NOW":
-			api.MessengerService.CreateShopNowTemplate(messaging.Sender.ID)
+			err := api.MessengerService.CreateShopNowTemplate(messaging.Sender.ID)
+			if err != nil {
+				log.Error().
+					Str("type", model.LogTypeAPI).
+					Str("status", model.LogStatusFailed).
+					Msg("operation CreateShopNowTemplate service failed")
+				ctx.JSON(http.StatusInternalServerError, model.ResponsePayload{
+					Status:  model.LogStatusFailed,
+					Payload: "cannot create shop now template menu"})
+			}
 		case "MY_ORDER":
 			fmt.Println("my order is not implement")
 		}

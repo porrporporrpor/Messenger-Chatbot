@@ -20,7 +20,7 @@ func webhookAPIGroup(r *gin.RouterGroup, config model.Config) {
 }
 
 func settingViewAPIGroup(r *gin.RouterGroup, config model.Config) {
-	settingAPI := api.SettingAPI{SettingService: service.SettingService{Config: config}}
+	settingAPI := api.SettingAPI{MessengerService: service.MessengerService{Config: config}}
 
 	r.POST("get_start", settingAPI.CreateGetStartSetting)
 }

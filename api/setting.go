@@ -9,11 +9,11 @@ import (
 )
 
 type SettingAPI struct {
-	SettingService service.SettingServiceInterface
+	MessengerService service.MessengerServiceInterface
 }
 
 func (api SettingAPI) CreateGetStartSetting(ctx *gin.Context) {
-	err := api.SettingService.CreateGetStartButton()
+	err := api.MessengerService.CreateGetStartButton()
 	if err != nil {
 		log.Error().
 			Str("type", model.LogTypeAPI).

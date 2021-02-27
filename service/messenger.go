@@ -34,7 +34,7 @@ func (s MessengerService) CreatePersistentMenu(psid string) error {
 				CallToActions: []model.CallToAction{
 					{
 						Type:    "postback",
-						Title:   pointy.String("Show Now!"),
+						Title:   pointy.String("Show Now !"),
 						Payload: pointy.String("SHOP_NOW"),
 					},
 					{
@@ -45,7 +45,7 @@ func (s MessengerService) CreatePersistentMenu(psid string) error {
 					},
 					{
 						Type:    "postback",
-						Title:   pointy.String("My Order!"),
+						Title:   pointy.String("My Order !"),
 						Payload: pointy.String("MY_ORDER"),
 					},
 				},
@@ -108,7 +108,7 @@ func (s MessengerService) CreateShopNowTemplate(psid string) error {
 					TemplateType: "generic",
 					Elements: []model.Element{
 						{
-							Title:    "ProductName",
+							Title:    "Product Name 1",
 							ImageUrl: "https://picsum.photos/200",
 							Subtitle: "Description",
 							DefaultAction: model.CallToAction{
@@ -120,7 +120,7 @@ func (s MessengerService) CreateShopNowTemplate(psid string) error {
 								{
 									Type:    "postback",
 									Title:   pointy.String("Shop Now !"),
-									Payload: pointy.String("DEVELOPER_DEFINED_PAYLOAD"),
+									Payload: pointy.String("VIEW_PRODUCT_1"),
 								},
 								{
 									Type:  "web_url",
@@ -130,7 +130,7 @@ func (s MessengerService) CreateShopNowTemplate(psid string) error {
 							},
 						},
 						{
-							Title:    "ProductName",
+							Title:    "Product Name 2",
 							ImageUrl: "https://picsum.photos/200",
 							Subtitle: "Description",
 							DefaultAction: model.CallToAction{
@@ -142,7 +142,7 @@ func (s MessengerService) CreateShopNowTemplate(psid string) error {
 								{
 									Type:    "postback",
 									Title:   pointy.String("Shop Now !"),
-									Payload: pointy.String("DEVELOPER_DEFINED_PAYLOAD"),
+									Payload: pointy.String("VIEW_PRODUCT_2"),
 								},
 								{
 									Type:  "web_url",

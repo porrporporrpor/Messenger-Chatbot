@@ -63,3 +63,18 @@ type RequestBodyCreateGenericTemplate struct {
 	Recipient Recipient       `json:"recipient"`
 	Message   TemplateMessage `json:"message"`
 }
+
+type QuickReply struct {
+	ContentType string `json:"content_type"`
+	Title       string `json:"title"`
+	Payload     string `json:"payload"`
+}
+type QuickReplyMessage struct {
+	Text         string       `json:"text"`
+	QuickReplies []QuickReply `json:"quick_replies"`
+}
+type RequestBodyCreateQuickReply struct {
+	Recipient   Recipient         `json:"recipient"`
+	MessageType string            `json:"messaging_type"`
+	Message     QuickReplyMessage `json:"message"`
+}

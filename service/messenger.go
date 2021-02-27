@@ -14,6 +14,7 @@ import (
 type MessengerServiceInterface interface {
 	CreateGetStartButton() error
 	CreatePersistentMenu(psid string) error
+	CreateQuickReply(psid string, quickReply model.QuickReplyMessage) error
 	CreateShopNowTemplate(psid string) error
 }
 
@@ -164,6 +165,60 @@ func (s MessengerService) CreatePersistentMenu(psid string) error {
 			},
 		},
 	})
+	if err != nil {
+		log.Error().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusFailed).
+			Msg(err.Error())
+		return err
+	}
+
+	resp, err := http.Post(endpoint, model.ContentTypeJSON, rawRequestBody)
+	if err != nil {
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Error().
+				Str("type", model.LogTypeService).
+				Str("status", model.LogStatusFailed).
+				Msg(err.Error())
+			return err
+		}
+		bodyString := string(bodyBytes)
+		log.Debug().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusData).
+			Msg(bodyString)
+
+		log.Error().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusFailed).
+			Msg(err.Error())
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		errorMessage := errors.New(fmt.Sprintf("call http POST given %s resposne", resp.Status))
+		log.Error().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusFailed).
+			Msg(errorMessage.Error())
+		return errorMessage
+	}
+
+	return nil
+}
+
+func (s MessengerService) CreateQuickReply(psid string, quickReply model.QuickReplyMessage) error {
+	endpoint := fmt.Sprintf("%s/messages?access_token=%s",
+		s.Config.MessengerConfig.MessengerAPIUrl,
+		s.Config.MessengerConfig.PageAccessToken)
+
+	rawRequestBody, err := util.CreateRequestBody(model.RequestBodyCreateQuickReply{
+		Recipient:   model.Recipient{ID: psid},
+		MessageType: "RESPONSE",
+		Message: model.QuickReplyMessage{
+			Text:         quickReply.Text,
+			QuickReplies: quickReply.QuickReplies,
+		}})
 	if err != nil {
 		log.Error().
 			Str("type", model.LogTypeService).

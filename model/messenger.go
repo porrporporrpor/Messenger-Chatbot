@@ -54,6 +54,9 @@ type Message struct {
 	MID         string        `json:"mid,omitempty"`
 	Text        string        `json:"text,omitempty"`
 	Attachments *[]Attachment `json:"attachments,omitempty"`
+	QuickReply  *struct {
+		Payload string `json:"payload,omitempty"`
+	} `json:"quick_reply,omitempty"`
 }
 
 type Postback struct {

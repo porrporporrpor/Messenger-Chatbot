@@ -41,27 +41,94 @@ type RequestBodyCreatePersistentMenu struct {
 	PersistentMenus []PersistentMenu `json:"persistent_menu"`
 }
 
-type Element struct {
+type GenericElement struct {
 	Title         string         `json:"title"`
 	ImageUrl      string         `json:"image_url"`
 	Subtitle      string         `json:"subtitle"`
 	DefaultAction CallToAction   `json:"default_action"`
 	Buttons       []CallToAction `json:"buttons"`
 }
-type TemplateAttachmentPayload struct {
-	TemplateType string    `json:"template_type"`
-	Elements     []Element `json:"elements"`
+type TemplateGenericPayload struct {
+	TemplateType string           `json:"template_type"`
+	Elements     []GenericElement `json:"elements"`
 }
-type TemplateAttachment struct {
-	Type    string                    `json:"type"`
-	Payload TemplateAttachmentPayload `json:"payload"`
+type TemplateGenericAttachment struct {
+	Type    string                 `json:"type"`
+	Payload TemplateGenericPayload `json:"payload"`
 }
-type TemplateMessage struct {
-	Attachment TemplateAttachment `json:"attachment"`
+type TemplateGenericMessage struct {
+	Attachment TemplateGenericAttachment `json:"attachment"`
 }
 type RequestBodyCreateGenericTemplate struct {
-	Recipient Recipient       `json:"recipient"`
-	Message   TemplateMessage `json:"message"`
+	Recipient Recipient              `json:"recipient"`
+	Message   TemplateGenericMessage `json:"message"`
+}
+
+type ReceiptElement struct {
+	Title    string `json:"title"`
+	Subtitle string `json:"subtitle"`
+	Quantity int    `json:"quantity"`
+	Price    int    `json:"price"`
+	Currency string `json:"currency"`
+	ImageUrl string `json:"image_url"`
+}
+type ReceiptAdjustments struct {
+	Name   string `json:"name"`
+	Amount int    `json:"amount"`
+}
+type ReceiptSummary struct {
+	Subtotal     float64 `json:"subtotal"`
+	ShippingCost float64 `json:"shipping_cost"`
+	TotalTax     float64 `json:"total_tax"`
+	TotalCost    float64 `json:"total_cost"`
+}
+type ReceiptAddress struct {
+	Street     string `json:"street_1"`
+	City       string `json:"city"`
+	PostalCode string `json:"postal_code"`
+	State      string `json:"state"`
+	Country    string `json:"country"`
+}
+type TemplateReceiptPayload struct {
+	TemplateType  string                `json:"template_type"`
+	RecipientName string                `json:"recipient_name"`
+	OrderName     string                `json:"order_number"`
+	Currency      string                `json:"currency"`
+	PaymentMethod string                `json:"payment_method"`
+	OrderUrl      string                `json:"order_url"`
+	Timestamp     string                `json:"timestamp"`
+	Address       *ReceiptAddress       `json:"address,omitempty"`
+	Summary       ReceiptSummary        `json:"summary"`
+	Adjustments   *[]ReceiptAdjustments `json:"adjustments,omitempty"`
+	Elements      []ReceiptElement      `json:"elements"`
+}
+type TemplateReceiptAttachment struct {
+	Type    string                 `json:"type"`
+	Payload TemplateReceiptPayload `json:"payload"`
+}
+type TemplateReceiptMessage struct {
+	Attachment TemplateReceiptAttachment `json:"attachment"`
+}
+type RequestBodyCreateReceiptTemplate struct {
+	Recipient Recipient              `json:"recipient"`
+	Message   TemplateReceiptMessage `json:"message"`
+}
+
+type TemplateButtonPayload struct {
+	TemplateType string         `json:"template_type"`
+	Text         string         `json:"text"`
+	Button       []CallToAction `json:"buttons"`
+}
+type TemplateButtonAttachment struct {
+	Type    string                `json:"type"`
+	Payload TemplateButtonPayload `json:"payload"`
+}
+type TemplateButtonMessage struct {
+	Attachment TemplateButtonAttachment `json:"attachment"`
+}
+type RequestBodyCreateButtonTemplate struct {
+	Recipient Recipient             `json:"recipient"`
+	Message   TemplateButtonMessage `json:"message"`
 }
 
 type QuickReply struct {

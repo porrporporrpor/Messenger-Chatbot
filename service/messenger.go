@@ -155,7 +155,7 @@ func (s MessengerService) CreatePersistentMenu(psid string) error {
 					{
 						Type:               "web_url",
 						Title:              pointy.String("Instagram"),
-						URL:                pointy.String("https://www.instagram.com/ppor.s"),
+						URL:                pointy.String("https://www.instagram.com/threemandown"),
 						WebviewHeightRatio: pointy.String("full"),
 					},
 					{

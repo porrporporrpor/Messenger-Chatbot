@@ -15,7 +15,9 @@ type MessengerServiceInterface interface {
 	CreateGetStartButton() error
 	CreatePersistentMenu(psid string) error
 	CreateQuickReply(psid string, quickReply model.QuickReplyMessage) error
-	CreateShopNowTemplate(psid string) error
+	CreateGenericTemplate(psid string, payload model.TemplateGenericPayload) error
+	CreateReceiptTemplate(psid string, payload model.TemplateReceiptPayload) error
+	CreateButtonTemplate(psid string, payload model.TemplateButtonPayload) error
 }
 
 type MessengerService struct {
@@ -261,66 +263,127 @@ func (s MessengerService) CreateQuickReply(psid string, quickReply model.QuickRe
 	return nil
 }
 
-func (s MessengerService) CreateShopNowTemplate(psid string) error {
+func (s MessengerService) CreateGenericTemplate(psid string, payload model.TemplateGenericPayload) error {
 	endpoint := fmt.Sprintf("%s/messages?access_token=%s",
 		s.Config.MessengerConfig.MessengerAPIUrl,
 		s.Config.MessengerConfig.PageAccessToken)
 
 	rawRequestBody, err := util.CreateRequestBody(model.RequestBodyCreateGenericTemplate{
 		Recipient: model.Recipient{ID: psid},
-		Message: model.TemplateMessage{
-			Attachment: model.TemplateAttachment{
-				Type: "template",
-				Payload: model.TemplateAttachmentPayload{
-					TemplateType: "generic",
-					Elements: []model.Element{
-						{
-							Title:    "Product Name 1",
-							ImageUrl: "https://picsum.photos/200",
-							Subtitle: "Description",
-							DefaultAction: model.CallToAction{
-								Type:               "web_url",
-								URL:                pointy.String("https://picsum.photos/200"),
-								WebviewHeightRatio: pointy.String("tall"),
-							},
-							Buttons: []model.CallToAction{
-								{
-									Type:    "postback",
-									Title:   pointy.String("Shop Now !"),
-									Payload: pointy.String("VIEW_PRODUCT_1"),
-								},
-								{
-									Type:  "web_url",
-									Title: pointy.String("Instagram"),
-									URL:   pointy.String("https://instagram.com"),
-								},
-							},
-						},
-						{
-							Title:    "Product Name 2",
-							ImageUrl: "https://picsum.photos/200",
-							Subtitle: "Description",
-							DefaultAction: model.CallToAction{
-								Type:               "web_url",
-								URL:                pointy.String("https://picsum.photos/200"),
-								WebviewHeightRatio: pointy.String("tall"),
-							},
-							Buttons: []model.CallToAction{
-								{
-									Type:    "postback",
-									Title:   pointy.String("Shop Now !"),
-									Payload: pointy.String("VIEW_PRODUCT_2"),
-								},
-								{
-									Type:  "web_url",
-									Title: pointy.String("Instagram"),
-									URL:   pointy.String("https://instagram.com"),
-								},
-							},
-						},
-					},
-				},
+		Message: model.TemplateGenericMessage{
+			Attachment: model.TemplateGenericAttachment{
+				Type:    "template",
+				Payload: payload,
 			}},
+	})
+	if err != nil {
+		log.Error().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusFailed).
+			Msg(err.Error())
+		return err
+	}
+
+	resp, err := http.Post(endpoint, model.ContentTypeJSON, rawRequestBody)
+	if err != nil {
+		log.Error().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusFailed).
+			Msg(err.Error())
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Error().
+				Str("type", model.LogTypeService).
+				Str("status", model.LogStatusFailed).
+				Msg(err.Error())
+			return err
+		}
+		bodyString := string(bodyBytes)
+		log.Debug().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusData).
+			Msg(bodyString)
+
+		errorMessage := errors.New(fmt.Sprintf("call http POST given %s resposne", resp.Status))
+		log.Error().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusFailed).
+			Msg(errorMessage.Error())
+		return errorMessage
+	}
+
+	return nil
+}
+
+func (s MessengerService) CreateReceiptTemplate(psid string, payload model.TemplateReceiptPayload) error {
+	endpoint := fmt.Sprintf("%s/messages?access_token=%s",
+		s.Config.MessengerConfig.MessengerAPIUrl,
+		s.Config.MessengerConfig.PageAccessToken)
+
+	rawRequestBody, err := util.CreateRequestBody(model.RequestBodyCreateReceiptTemplate{
+		Recipient: model.Recipient{ID: psid},
+		Message: model.TemplateReceiptMessage{
+			Attachment: model.TemplateReceiptAttachment{
+				Type:    "template",
+				Payload: payload,
+			}},
+	})
+	if err != nil {
+		log.Error().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusFailed).
+			Msg(err.Error())
+		return err
+	}
+
+	resp, err := http.Post(endpoint, model.ContentTypeJSON, rawRequestBody)
+	if err != nil {
+		log.Error().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusFailed).
+			Msg(err.Error())
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Error().
+				Str("type", model.LogTypeService).
+				Str("status", model.LogStatusFailed).
+				Msg(err.Error())
+			return err
+		}
+		bodyString := string(bodyBytes)
+		log.Debug().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusData).
+			Msg(bodyString)
+
+		errorMessage := errors.New(fmt.Sprintf("call http POST given %s resposne", resp.Status))
+		log.Error().
+			Str("type", model.LogTypeService).
+			Str("status", model.LogStatusFailed).
+			Msg(errorMessage.Error())
+		return errorMessage
+	}
+
+	return nil
+}
+
+func (s MessengerService) CreateButtonTemplate(psid string, payload model.TemplateButtonPayload) error {
+	endpoint := fmt.Sprintf("%s/messages?access_token=%s",
+		s.Config.MessengerConfig.MessengerAPIUrl,
+		s.Config.MessengerConfig.PageAccessToken)
+
+	rawRequestBody, err := util.CreateRequestBody(model.RequestBodyCreateButtonTemplate{
+		Recipient: model.Recipient{ID: psid},
+		Message: model.TemplateButtonMessage{Attachment: model.TemplateButtonAttachment{
+			Type:    "template",
+			Payload: payload,
+		}},
 	})
 	if err != nil {
 		log.Error().
